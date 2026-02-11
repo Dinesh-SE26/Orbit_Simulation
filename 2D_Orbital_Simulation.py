@@ -9,13 +9,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 
-### Initial Conditions
+### Constants
 R_earth = 6371e3        # in km
-M_earth = 5.972e24      # in km
-G_const = 6.6743e-11    # in km
+M_earth = 5.972e24      # in kg
+G_const = 6.6743e-11    # in N m^2 / kg^2
 
+### Initial Conditions
 Sat_pos = int(input("At which altitude you want to place the body: ")) * 1e3
-# Sat_pos = 5000 * 1e3
 dt = 10                 # in seconds
 steps = 6000            # Each step is equal to dt. Assume if dt = 10, then each step is equal to 10s
 
@@ -24,7 +24,7 @@ def norm(vector):                           # Function for finding norm of a vec
 
 r_vect = np.array([R_earth + Sat_pos, 0.0])                    # Position towards earth (X Axis)
 v_mag = np.sqrt((G_const * M_earth) / norm(r_vect))            # Orbital Speed
-v_vect = np.array([0.0, v_mag])                                # Velocity perpendicular to position (Y Axis)
+v_vect = np.array([0.0, v_mag])                                # Velocity should be perpendicular to position (Y Axis)
 
 def velocity_verlet(r_vect, v_vect, steps):
     positions = []
