@@ -13,21 +13,18 @@ from matplotlib.animation import FuncAnimation
 R_earth = 6371e3        # in km
 M_earth = 5.972e24      # in km
 G_const = 6.6743e-11    # in km
-R_Sat = 20e4            # in km (exaggerated Radius)
 
-# R_sat = int(input("At which altitude you want to place the body: ")) * 1e3
-R_sat = 1000 * 1e3
-steps = 6000
+Sat_pos = int(input("At which altitude you want to place the body: ")) * 1e3
+# Sat_pos = 5000 * 1e3
 dt = 10                 # in seconds
-
-### Assume if dt = 10, then each step is equal to 10s
+steps = 6000            # Each step is equal to dt. Assume if dt = 10, then each step is equal to 10s
 
 def norm(vector):                           # Function for finding norm of a vector
     return np.linalg.norm(vector)
 
-r_vect = np.array([R_earth + R_sat, 0.0])
-v_mag = np.sqrt((G_const * M_earth) / norm(r_vect))
-v_vect = np.array([0.0, v_mag])
+r_vect = np.array([R_earth + Sat_pos, 0.0])                    # Position towards earth (X Axis)
+v_mag = np.sqrt((G_const * M_earth) / norm(r_vect))            # Orbital Speed
+v_vect = np.array([0.0, v_mag])                                # Velocity perpendicular to position (Y Axis)
 
 def velocity_verlet(r_vect, v_vect, steps):
     positions = []
@@ -52,26 +49,32 @@ fig, axis = plt.subplots()
 Earth_sim = plt.Circle([0, 0], R_earth, color = 'Orange')
 axis.add_patch(Earth_sim)
 
-# 2D Satellite Body
-sat = plt.Circle((0, 0), R_Sat, color='blue')
-axis.add_patch(sat)
-
-sat_orbit, = axis.plot([], [], color = "blue")
-axis.set_aspect("equal")
+# 2D Satellite Body and Trial
+Sat_sim = axis.scatter([], [], color = "blue", s = 40)
+Sat_trial, = axis.plot([], [], color = "blue")
 
 # 2D figure Coordinate Limits
 limits = np.max(np.abs(positions))
-margin = 1.2
+margin = 1.5
 axis.set_xlim(-limits * margin, limits * margin)
 axis.set_ylim(-limits * margin, limits * margin)
 
+# Labels
+axis.set_xlabel("X Axis")
+axis.set_ylabel("Y Axis")
+Earth_sim.set_edgecolor("black")
+Earth_sim.set_label("Earth")
+Sat_sim.set_label("Satellite")
+axis.set_aspect("equal")
+
 ### Simulation...
 def update(frame):
-    sat_orbit.set_data(positions[:frame, 0], positions[:frame, 1])
-    sat.center = positions[frame]
+    Sat_sim.set_offsets(positions[frame])
+    Sat_trial.set_data(positions[:frame, 0], positions[:frame, 1])
     return
 
 Simulate = FuncAnimation(fig=fig, func=update, frames=steps, interval = 25)
 
-plt.grid()
+plt.legend()
+#plt.grid()
 plt.show()
