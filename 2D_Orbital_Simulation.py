@@ -75,6 +75,7 @@ def update(frame):
 
 Simulate = FuncAnimation(fig=fig, func=update, frames=steps, interval = 25)
 
-plt.legend()
-#plt.grid()
+axis.set_title("2D Orbit Simulation",loc='center', pad=15)
+axis.legend()
+axis.grid()
 plt.show()
